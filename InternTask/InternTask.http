@@ -1,0 +1,6 @@
+@InternTask_HostAddress = http://localhost:5138
+
+GET {{InternTask_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
