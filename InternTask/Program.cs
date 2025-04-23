@@ -1,44 +1,60 @@
-var builder = WebApplication.CreateBuilder(args);
+using InternTask.Conditions;
+using InternTask.Factories;
+using InternTask.Interfaces;
+using InternTask.Models;
+using InternTask.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    static async Task Main(string[] args)
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false)
+            .Build();
 
-app.UseHttpsRedirection();
+        // Create logger
+        using var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.AddConsole();
+        });
+        ILogger<ScoringService> logger = loggerFactory.CreateLogger<ScoringService>();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+        // Create conditions dynamically from config
+        IEnumerable<ICondition> conditions = ConditionFactory.CreateFromConfiguration(configuration, logger);
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+        // Instantiate the scoring service
+        var scoringService = new ScoringService(conditions, logger);
 
-app.Run();
+        // Create test customer
+        var customer = new Customer
+        {
+            Id = 1,
+            Salary = 42000,
+            LoanCount = 4,
+            AccountBalance = 4500,
+            Age = 30,
+            Gender = "Female",
+            HasDefaultHistory = false
+        };
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        
+        var result = await scoringService.EvaluateCustomerAsync(customer);
+
+        Console.WriteLine("\n=== Evaluation Result ===");
+        Console.WriteLine($"Approved: {result.IsApproved}");
+        Console.WriteLine($"Eligible Amount: {(result.EligibleAmount.HasValue ? result.EligibleAmount.Value.ToString("C") : "N/A")}");
+        Console.WriteLine($"Message: {result.Message}");
+        Console.WriteLine("\n--- Details ---");
+        foreach (var detail in result.ConditionResults)
+        {
+            Console.WriteLine($"{detail.ConditionName}: {(detail.Result.Passed ? "✔️" : "❌")} - {detail.Result.Message}");
+        }
+    }
 }
