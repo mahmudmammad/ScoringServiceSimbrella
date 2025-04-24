@@ -8,30 +8,20 @@ using System.Threading.Tasks;
 
 namespace InternTask.Services
 {
-    /// <summary>
-    /// Implementation of the scoring service that evaluates customers against multiple conditions
-    /// </summary>
+
     public class ScoringService : IScoringService
     {
         private readonly IEnumerable<ICondition> _conditions;
         private readonly ILogger<ScoringService> _logger;
 
-        /// <summary>
-        /// Constructor that injects scoring conditions and logger
-        /// </summary>
-        /// <param name="conditions">Collection of conditions to evaluate</param>
-        /// <param name="logger">Logger for tracking the evaluation process</param>
+
         public ScoringService(IEnumerable<ICondition> conditions, ILogger<ScoringService> logger)
         {
             _conditions = conditions ?? throw new ArgumentNullException(nameof(conditions));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Evaluates a customer against all registered conditions
-        /// </summary>
-        /// <param name="customer">The customer to evaluate</param>
-        /// <returns>A scoring result with approval status and eligible amount</returns>
+     
         public async Task<ScoringResult> EvaluateCustomerAsync(Customer customer)
         {
             _logger.LogInformation($"Starting evaluation for customer ID: {customer?.Id}");
@@ -51,7 +41,7 @@ namespace InternTask.Services
             bool failedRequiredConditions = false;
             List<decimal> eligibleAmounts = new List<decimal>();
 
-            // Sort conditions by priority before evaluation
+   
             List<ICondition> sortedConditions = _conditions.OrderBy(c => c.Priority).ToList();
 
             foreach (var condition in sortedConditions)
@@ -60,10 +50,9 @@ namespace InternTask.Services
                 {
                     _logger.LogDebug($"Evaluating condition: {condition.Id} ({condition.Name})");
                     
-                    // Evaluate the condition
+         
                     var conditionResult = condition.Evaluate(customer);
                     
-                    // Create detailed result
                     ConditionEvaluationDetail detail = new ConditionEvaluationDetail
                     {
                         ConditionId = condition.Id,
@@ -72,22 +61,22 @@ namespace InternTask.Services
                         Result = conditionResult
                     };
                     
-                    // Add to the list of condition results
+       
                     result.ConditionResults.Add(detail);
                     
-                    // Log the evaluation result
+    
                     _logger.LogInformation(
                         $"Condition {condition.Id} evaluation: {(conditionResult.Passed ? "Passed" : "Failed")}. " +
                         $"Message: {conditionResult.Message}"
                     );
 
-                    // Handle required condition failures
+  
                     if (!conditionResult.Passed && condition.IsRequired)
                     {
                         _logger.LogWarning($"Required condition {condition.Id} failed");
                         failedRequiredConditions = true;
                         
-                        // No need to continue evaluation if a required condition fails
+         
                         if (failedRequiredConditions)
                         {
                             break;

@@ -31,7 +31,7 @@ public class SalaryThresholdCondition : ICondition
             return ConditionResult.Failure($"Salary ({customer.Salary:C}) is below the minimum requirement of {_minimumSalary:C}");
         }
 
-        // Calculate eligible amount based on salary
+
         decimal eligibleAmount = customer.Salary * _salaryMultiplier;
             
         return ConditionResult.Success(

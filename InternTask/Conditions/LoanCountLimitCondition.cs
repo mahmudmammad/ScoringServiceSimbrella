@@ -3,9 +3,7 @@ using InternTask.Models;
 
 namespace InternTask.Conditions
 {
-    /// <summary>
-    /// Evaluates if a customer's existing loan count is below the maximum allowed
-    /// </summary>
+
     public class LoanCountLimitCondition : ICondition
     {
         private readonly int _maxLoanCount;

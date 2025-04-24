@@ -3,10 +3,7 @@ using InternTask.Models;
 
 namespace InternTask.Conditions
 {
-    /// <summary>
-    /// Evaluates if a customer's account balance meets the minimum requirement
-    /// and influences the eligible loan amount based on the balance
-    /// </summary>
+ 
     public class AccountBalanceCondition : ICondition
     {
         private readonly decimal _minimumBalance;
