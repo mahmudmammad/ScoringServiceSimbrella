@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using InternTask.DB;
+using InternTask.Entities;
 
 namespace InternTask.Services
 {
@@ -15,10 +17,13 @@ namespace InternTask.Services
         private readonly ILogger<ScoringService> _logger;
 
 
-        public ScoringService(IEnumerable<ICondition> conditions, ILogger<ScoringService> logger)
+        private readonly ScoringDbContext _context;
+
+        public ScoringService(IEnumerable<ICondition> conditions, ILogger<ScoringService> logger, ScoringDbContext context)
         {
             _conditions = conditions ?? throw new ArgumentNullException(nameof(conditions));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
      
@@ -55,7 +60,7 @@ namespace InternTask.Services
                     
                     ConditionEvaluationDetail detail = new ConditionEvaluationDetail
                     {
-                        ConditionId = condition.Id,
+                        
                         ConditionName = condition.Name,
                         IsRequired = condition.IsRequired,
                         Result = conditionResult
@@ -98,7 +103,7 @@ namespace InternTask.Services
         
                     result.ConditionResults.Add(new ConditionEvaluationDetail
                     {
-                        ConditionId = condition.Id,
+                       
                         ConditionName = condition.Name,
                         IsRequired = condition.IsRequired,
                         Result = errorResult
@@ -136,6 +141,25 @@ namespace InternTask.Services
                 $"Result: {(result.IsApproved ? "Approved" : "Not Approved")}. " +
                 $"Eligible amount: {(result.EligibleAmount.HasValue ? result.EligibleAmount.Value.ToString("C") : "N/A")}"
             );
+            
+            var scoringResultEntity = new ScoringResultEntity
+            {
+                IsApproved = result.IsApproved,
+                EligibleAmount = result.EligibleAmount,
+                Message = result.Message,
+                ConditionEvaluations = result.ConditionResults.Select(cr => new ConditionEvaluationEntity
+                {
+                    Id = cr.ConditionId,
+                    ConditionName = cr.ConditionName,
+                    IsRequired = cr.IsRequired,
+                    Passed = cr.Result.Passed,
+                    EligibleAmount = cr.Result.EligibleAmount,
+                    Message = cr.Result.Message
+                }).ToList()
+            };
+
+            _context.ScoringResults.Add(scoringResultEntity);
+            await _context.SaveChangesAsync();
 
             
             return await Task.FromResult(result);

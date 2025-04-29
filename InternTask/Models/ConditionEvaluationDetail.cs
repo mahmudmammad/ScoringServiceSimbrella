@@ -3,7 +3,7 @@ namespace InternTask.Models;
 public class ConditionEvaluationDetail
 {
   
-    public string ConditionId { get; set; }
+    public int ConditionId { get; set; } 
         
   
     public string ConditionName { get; set; }

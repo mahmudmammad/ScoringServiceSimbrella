@@ -57,7 +57,7 @@ namespace InternTask.Factories
             switch (config.Type)
             {
                 case "SalaryThreshold":
-                    decimal minimumSalary = GetDecimalParameter(config.Parameters, "MinimumSalary", 30000);
+                    decimal minimumSalary = GetDecimalParameter(config.Parameters, "MinimumSalary", 3000);
                     decimal salaryMultiplier = GetDecimalParameter(config.Parameters, "SalaryMultiplier", 3.0m);
                     return new SalaryThresholdCondition(minimumSalary, salaryMultiplier);
                     
