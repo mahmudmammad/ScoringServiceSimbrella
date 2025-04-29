@@ -149,7 +149,7 @@ namespace InternTask.Services
                 Message = result.Message,
                 ConditionEvaluations = result.ConditionResults.Select(cr => new ConditionEvaluationEntity
                 {
-                    Id = cr.ConditionId,
+                    
                     ConditionName = cr.ConditionName,
                     IsRequired = cr.IsRequired,
                     Passed = cr.Result.Passed,
