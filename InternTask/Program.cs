@@ -22,7 +22,7 @@ builder.Services.AddDbContext<ScoringDbContext>(options =>
 
 // Add Prometheus metrics
 
-
+builder.Services.AddScoped<ScoringMetricsService>();
 // Register ScoringService as scoped
 builder.Services.AddScoped<IScoringService, ScoringService>();
 
