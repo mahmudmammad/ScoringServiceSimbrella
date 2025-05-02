@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+
 namespace InternTask.Entities;
 
 public class ConditionEvaluationEntity
@@ -17,6 +20,20 @@ public class ConditionEvaluationEntity
     public string Message { get; set; }
 
     public int ScoringResultEntityId { get; set; }
+    
+       
+    [Column(TypeName = "jsonb")]
+    public string ParametersJson { get; set; }
+        
+    [NotMapped]
+    public Dictionary<string, object> Parameters 
+    { 
+        get => string.IsNullOrEmpty(ParametersJson) 
+            ? new Dictionary<string, object>() 
+            : JsonSerializer.Deserialize<Dictionary<string, object>>(ParametersJson);
+        set => ParametersJson = JsonSerializer.Serialize(value);
+    }
 
     public ScoringResultEntity ScoringResult { get; set; }
+ 
 }

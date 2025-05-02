@@ -1,15 +1,16 @@
-namespace InternTask.Models;
+using System.Collections.Generic;
 
-public class ConditionEvaluationDetail
+namespace InternTask.Models
 {
-  
-  
+    public class ConditionEvaluationDetail
+    {
+        public string ConditionName { get; set; }
         
-  
-    public string ConditionName { get; set; }
+        public bool IsRequired { get; set; }
         
-    
-    public bool IsRequired { get; set; }
+        // Configuration parameters of the condition
+        public Dictionary<string, object> Config { get; set; } = new Dictionary<string, object>();
 
-    public ConditionResult  Result { get; set; }
+        public ConditionResult Result { get; set; }
+    }
 }

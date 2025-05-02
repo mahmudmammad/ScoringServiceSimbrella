@@ -17,4 +17,6 @@ public interface ICondition
         
 
     ConditionResult Evaluate(Customer customer);
+    
+    Dictionary<string, object> GetConfiguration();
 }
