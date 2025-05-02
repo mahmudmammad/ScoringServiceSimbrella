@@ -38,5 +38,15 @@ namespace InternTask.Conditions
                 $"Customer has {customer.LoanCount} active loans, below the maximum of {_maxLoanCount} (can take {remainingLoans} more)"
             );
         }
+        
+        public Dictionary<string, object> GetConfiguration()
+        {
+            return new Dictionary<string, object>
+            {
+                { "MaxLoanCount", _maxLoanCount }
+  
+            };
+        }
+        
     }
 }

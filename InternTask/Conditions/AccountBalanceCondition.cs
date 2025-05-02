@@ -43,5 +43,13 @@ namespace InternTask.Conditions
                 $"Account balance of {customer.AccountBalance:C} allows for additional {eligibleAmountFromBalance:C} in loan amount"
             );
         }
+        public Dictionary<string, object> GetConfiguration()
+        {
+            return new Dictionary<string, object>
+            {
+                { "minimumBalance", _minimumBalance },
+                { "balanceMultiplier", _balanceMultiplier }
+            };
+        }
     }
 }
