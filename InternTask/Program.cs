@@ -35,6 +35,7 @@ builder.Services.AddSingleton<IEnumerable<ICondition>>(sp =>
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
