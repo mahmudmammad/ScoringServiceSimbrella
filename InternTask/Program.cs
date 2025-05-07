@@ -46,7 +46,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Configure Prometheus metrics
-
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ScoringDbContext>();
+    dbContext.Database.Migrate();  // Apply migrations automatically
+}
 
 app.UseAuthorization();
 app.MapControllers();
