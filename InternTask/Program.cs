@@ -8,25 +8,26 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add database context
+
 builder.Services.AddDbContext<ScoringDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add Prometheus metrics
+
 
 builder.Services.AddScoped<ScoringMetricsService>();
-// Register ScoringService as scoped
+
 builder.Services.AddScoped<IScoringService, ScoringService>();
 
-// Register conditions from factory
+
 builder.Services.AddSingleton<IEnumerable<ICondition>>(sp => 
 {
     var logger = sp.GetRequiredService<ILogger<Program>>();
@@ -36,7 +37,7 @@ builder.Services.AddSingleton<IEnumerable<ICondition>>(sp =>
 var app = builder.Build();
 
 
-// Configure the HTTP request pipeline
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -45,7 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Configure Prometheus metrics
+
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ScoringDbContext>();
@@ -54,5 +55,9 @@ using (var scope = app.Services.CreateScope())
 
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseRouting();
+app.UseMetricServer();
+app.UseHttpMetrics();
 
 app.Run();

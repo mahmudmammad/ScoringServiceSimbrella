@@ -69,7 +69,9 @@ namespace InternTask.Factories
                     decimal minimumBalance = GetDecimalParameter(config.Parameters, "MinimumBalance", 1000);
                     decimal balanceMultiplier = GetDecimalParameter(config.Parameters, "BalanceMultiplier", 2.0m);
                     return new AccountBalanceCondition(minimumBalance, balanceMultiplier);
-                    
+                case "DefaultHistory":
+                    bool failIfHasDefault = GetBoolParameter(config.Parameters, "FailIfHasDefault", true);
+                    return new HasDefaultHistoryCondition(failIfHasDefault);   
      
                     
                 default:

@@ -138,13 +138,16 @@
 /src/InternTask/obj/Debug/net8.0/InternTask.pdb
 /src/InternTask/obj/Debug/net8.0/InternTask.genruntimeconfig.cache
 /src/InternTask/obj/Debug/net8.0/ref/InternTask.dll
+/Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/xunit.abstractions.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/appsettings.Development.json
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/appsettings.json
+/Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/xunit.runner.visualstudio.testadapter.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/InternTask
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/InternTask.deps.json
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/InternTask.runtimeconfig.json
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/InternTask.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/InternTask.pdb
+/Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Castle.Core.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Humanizer.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Microsoft.AspNetCore.OpenApi.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Microsoft.Bcl.AsyncInterfaces.dll
@@ -172,6 +175,7 @@
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Microsoft.OpenApi.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Mono.TextTemplating.dll
+/Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Moq.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Npgsql.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.Design.dll
@@ -190,6 +194,9 @@
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/System.IO.Pipelines.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/System.Text.Encodings.Web.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/System.Text.Json.dll
+/Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/xunit.assert.dll
+/Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/xunit.core.dll
+/Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/xunit.execution.dotnet.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/cs/Microsoft.CodeAnalysis.resources.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/de/Microsoft.CodeAnalysis.resources.dll
 /Users/memmedov/Desktop/SimbrellaMain/ScoringServiceSimbrella/InternTask/bin/Debug/net8.0/es/Microsoft.CodeAnalysis.resources.dll

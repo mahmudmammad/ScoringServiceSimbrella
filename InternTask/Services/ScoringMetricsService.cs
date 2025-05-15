@@ -6,18 +6,17 @@ namespace InternTask.Services
 {
     public class ScoringMetricsService
     {
-        // Counter metrics - incremented values
         private readonly Counter _totalScoringRequests;
         private readonly Counter _successfulScoringRequests;
         private readonly Counter _failedScoringRequests;
         
-        // Counter vector - for tracking errors by condition
+      
         private readonly Counter _conditionErrors;
         
-        // Histogram - for tracking evaluation time distributions
+       
         private readonly Histogram _conditionEvaluationDuration;
         
-        // Constructor - define and register all metrics
+       
         public ScoringMetricsService()
         {
             // Total number of scoring requests

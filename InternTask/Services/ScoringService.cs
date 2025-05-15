@@ -31,7 +31,7 @@ namespace InternTask.Services
 
         public async Task<ScoringResult> EvaluateCustomerAsync(Customer customer)
         {
-            // Record that a scoring request has been made
+            
             _metrics.RecordScoringRequest();
             
             _logger.LogInformation($"Starting evaluation for customer ID: {customer?.Id}");
@@ -60,12 +60,12 @@ namespace InternTask.Services
                 {
                     _logger.LogDebug($"Evaluating condition: {condition.Id} ({condition.Name})");
                     
-                    // Measure condition evaluation duration
+              
                     using (_metrics.MeasureConditionDuration(condition.Name))
                     {
                         var conditionResult = condition.Evaluate(customer);
                         
-                        // Create the condition evaluation detail
+          
                         ConditionEvaluationDetail detail = new ConditionEvaluationDetail
                         {
                             ConditionName = condition.Name,
@@ -101,7 +101,7 @@ namespace InternTask.Services
                 }
                 catch (Exception ex)
                 {
-                    // Record condition error in metrics
+                 
                     _metrics.RecordConditionError(condition.Name);
                     
                     _logger.LogError(ex, $"Error evaluating condition {condition.Id}: {ex.Message}");
@@ -130,21 +130,21 @@ namespace InternTask.Services
                 result.EligibleAmount = eligibleAmounts.Min();
                 result.Message = $"Customer approved for a loan up to {result.EligibleAmount:C}";
                 
-                // Record successful scoring request
+       
                 _metrics.RecordSuccessfulScoringRequest();
             }
             else if (result.IsApproved)
             {
                 result.Message = "Customer approved but no specific amount determined";
                 
-                // Record successful scoring request
+            
                 _metrics.RecordSuccessfulScoringRequest();
             }
             else
             {
                 result.Message = "Customer not approved";
                 
-                // Record failed scoring request
+         
                 _metrics.RecordFailedScoringRequest();
             }
 
@@ -154,7 +154,7 @@ namespace InternTask.Services
                 $"Eligible amount: {(result.EligibleAmount.HasValue ? result.EligibleAmount.Value.ToString("C") : "N/A")}"
             );
             
-            // Save to database with parameters
+
             var scoringResultEntity = new ScoringResultEntity
             {
                 IsApproved = result.IsApproved,
