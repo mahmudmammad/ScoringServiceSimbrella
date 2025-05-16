@@ -50,7 +50,7 @@ app.UseHttpsRedirection();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ScoringDbContext>();
-    dbContext.Database.Migrate();  // Apply migrations automatically
+    dbContext.Database.Migrate();  
 }
 
 app.UseAuthorization();

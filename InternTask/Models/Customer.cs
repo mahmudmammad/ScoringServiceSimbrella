@@ -1,7 +1,10 @@
+using System.Text.Json.Serialization;
+
 namespace InternTask.Models;
 
 public class Customer
 {
+    [JsonIgnore]
     public int Id { get; set; }
 
     public decimal Salary { get; set; }

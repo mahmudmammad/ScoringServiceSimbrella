@@ -12,7 +12,11 @@ namespace InternTask.Controllers
     {
         private readonly IScoringService _scoringService;
         private readonly ILogger<ScoringController> _logger;
-
+        /// <summary>
+        /// Evaluates a customer for loan eligibility.
+        /// </summary>
+        /// <param name="customer">Customer details including salary, age, account balance, etc.</param>
+        /// <returns>Loan approval decision with detailed evaluation results.</returns>
         public ScoringController(IScoringService scoringService, ILogger<ScoringController> logger)
         {
             _scoringService = scoringService;
