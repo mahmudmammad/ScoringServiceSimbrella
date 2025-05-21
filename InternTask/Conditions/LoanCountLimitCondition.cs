@@ -34,7 +34,7 @@ namespace InternTask.Conditions
 
             int remainingLoans = _maxLoanCount - customer.LoanCount;
             return ConditionResult.Success(
-                null, // No eligible amount is determined by this condition
+                0, 
                 $"Customer has {customer.LoanCount} active loans, below the maximum of {_maxLoanCount} (can take {remainingLoans} more)"
             );
         }

@@ -12,7 +12,7 @@ namespace InternTask.Conditions
         public string Id => "AccountBalance";
         public string Name => "Minimum Account Balance Check";
         public int Priority => 3;
-        public bool IsRequired => false; // Not a hard requirement but affects eligibility
+        public bool IsRequired => false;
 
         public AccountBalanceCondition(decimal minimumBalance = 1000, decimal balanceMultiplier = 2.0m)
         {
@@ -27,7 +27,6 @@ namespace InternTask.Conditions
                 return ConditionResult.Failure("Customer information is missing");
             }
 
-            // If balance is negative or below minimum, return failure
             if (customer.AccountBalance < _minimumBalance)
             {
                 return ConditionResult.Failure(
@@ -35,7 +34,6 @@ namespace InternTask.Conditions
                 );
             }
 
-            // Calculate additional eligible amount based on account balance
             decimal eligibleAmountFromBalance = customer.AccountBalance * _balanceMultiplier;
             
             return ConditionResult.Success(

@@ -23,7 +23,7 @@ builder.Services.AddDbContext<ScoringDbContext>(options =>
 
 
 
-builder.Services.AddScoped<ScoringMetricsService>();
+builder.Services.AddSingleton<ScoringMetricsService>();
 
 builder.Services.AddScoped<IScoringService, ScoringService>();
 
@@ -44,7 +44,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 
 using (var scope = app.Services.CreateScope())

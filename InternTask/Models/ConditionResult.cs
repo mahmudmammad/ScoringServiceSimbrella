@@ -5,11 +5,11 @@ public class ConditionResult
     public bool Passed { get; set; }
 
 
-    public decimal? EligibleAmount { get; set; }
+    public decimal EligibleAmount { get; set; } = 0m;
 
     public string Message { get; set; }
 
-    public static ConditionResult Success (decimal? eligibleAmount = null, string message = null)
+    public static ConditionResult Success (decimal eligibleAmount , string message = null)
     {
 
         return new ConditionResult
@@ -25,7 +25,7 @@ public class ConditionResult
         return new ConditionResult
         {
             Passed = false,
-            EligibleAmount = null,
+            EligibleAmount = 0,
             Message = message
         };
     }

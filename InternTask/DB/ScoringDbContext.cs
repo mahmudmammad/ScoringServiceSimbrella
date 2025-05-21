@@ -16,12 +16,10 @@ namespace InternTask.DB
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure JsonB column for condition parameters
             modelBuilder.Entity<ConditionEvaluationEntity>()
                 .Property(c => c.ParametersJson)
                 .HasColumnType("jsonb");
                 
-            // Configure relationship between ScoringResult and ConditionEvaluations
             modelBuilder.Entity<ConditionEvaluationEntity>()
                 .HasOne(c => c.ScoringResult)
                 .WithMany(s => s.ConditionEvaluations)

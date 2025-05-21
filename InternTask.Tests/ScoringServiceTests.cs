@@ -72,7 +72,7 @@ public class ScoringServiceTests
         var result = await _service.EvaluateCustomerAsync(null);
 
         Assert.False(result.IsApproved);
-        Assert.Null(result.EligibleAmount);
+        Assert.Equal(result.EligibleAmount, 0);
         Assert.Equal("Customer information is missing", result.Message);
     }
 
@@ -85,7 +85,8 @@ public class ScoringServiceTests
         var failedCondition = new ConditionResult
         {
             Passed = false,
-            Message = "Condition failed"
+            Message = "Condition failed",
+            EligibleAmount = 0m 
         };
 
         _conditionMock.Setup(c => c.Evaluate(It.IsAny<Customer>()))

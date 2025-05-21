@@ -34,7 +34,7 @@ namespace InternTask.Services
             
             _metrics.RecordScoringRequest();
             
-            _logger.LogInformation($"Starting evaluation for customer ID: {customer?.Id}");
+            _logger.LogInformation($"Starting evaluation for customer");
 
             if (customer == null)
             {
@@ -43,7 +43,7 @@ namespace InternTask.Services
                 return new ScoringResult
                 {
                     IsApproved = false,
-                    EligibleAmount = null,
+                    EligibleAmount = 0,
                     Message = "Customer information is missing"
                 };
             }
@@ -58,33 +58,30 @@ namespace InternTask.Services
             {
                 try
                 {
-                    _logger.LogDebug($"Evaluating condition: {condition.Id} ({condition.Name})");
-                    
+                    _logger.LogDebug($"Evaluating condition: ({condition.Name})");
               
                     using (_metrics.MeasureConditionDuration(condition.Name))
                     {
                         var conditionResult = condition.Evaluate(customer);
                         
-          
                         ConditionEvaluationDetail detail = new ConditionEvaluationDetail
                         {
                             ConditionName = condition.Name,
                             IsRequired = condition.IsRequired,
                             Result = conditionResult,
-                            // Get the configuration from the condition
                             Config = condition.GetConfiguration()
                         };
                         
                         result.ConditionResults.Add(detail);
                         
                         _logger.LogInformation(
-                            $"Condition {condition.Id} evaluation: {(conditionResult.Passed ? "Passed" : "Failed")}. " +
+                            $"Condition {condition.Name} evaluation: {(conditionResult.Passed ? "Passed" : "Failed")}. " +
                             $"Message: {conditionResult.Message}"
                         );
 
                         if (!conditionResult.Passed && condition.IsRequired)
                         {
-                            _logger.LogWarning($"Required condition {condition.Id} failed");
+                            _logger.LogWarning($"Required condition {condition.Name} failed");
                             failedRequiredConditions = true;
                             
                             if (failedRequiredConditions)
@@ -93,10 +90,11 @@ namespace InternTask.Services
                             }
                         }
 
-                        if (conditionResult.Passed && conditionResult.EligibleAmount.HasValue)
+                        if (conditionResult.Passed && conditionResult.EligibleAmount > 0)
                         {
-                            eligibleAmounts.Add(conditionResult.EligibleAmount.Value);
+                            eligibleAmounts.Add(conditionResult.EligibleAmount);
                         }
+
                     }
                 }
                 catch (Exception ex)
@@ -129,7 +127,6 @@ namespace InternTask.Services
             {
                 result.EligibleAmount = eligibleAmounts.Min();
                 result.Message = $"Customer approved for a loan up to {result.EligibleAmount:C}";
-                
        
                 _metrics.RecordSuccessfulScoringRequest();
             }
@@ -137,7 +134,6 @@ namespace InternTask.Services
             {
                 result.Message = "Customer approved but no specific amount determined";
                 
-            
                 _metrics.RecordSuccessfulScoringRequest();
             }
             else
@@ -149,25 +145,25 @@ namespace InternTask.Services
             }
 
             _logger.LogInformation(
-                $"Evaluation completed for customer ID: {customer.Id}. " +
+                $"Evaluation completed for customer . " +
                 $"Result: {(result.IsApproved ? "Approved" : "Not Approved")}. " +
-                $"Eligible amount: {(result.EligibleAmount.HasValue ? result.EligibleAmount.Value.ToString("C") : "N/A")}"
+                $"Eligible amount: {(result.EligibleAmount)}"
             );
             
 
             var scoringResultEntity = new ScoringResultEntity
             {
                 IsApproved = result.IsApproved,
-                EligibleAmount = result.EligibleAmount,
+                EligibleAmount = result.EligibleAmount ,
                 Message = result.Message,
                 ConditionEvaluations = result.ConditionResults.Select(cr => new ConditionEvaluationEntity
                 {
                     ConditionName = cr.ConditionName,
                     IsRequired = cr.IsRequired,
                     Passed = cr.Result.Passed,
-                    EligibleAmount = cr.Result.EligibleAmount,
+                    EligibleAmount = cr.Result.EligibleAmount ,
                     Message = cr.Result.Message,
-                    // Store the condition parameters from Config
+                   
                     Parameters = cr.Config ?? new Dictionary<string, object>()
                 }).ToList()
             };
