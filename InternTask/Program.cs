@@ -26,6 +26,8 @@ builder.Services.AddDbContext<ScoringDbContext>(options =>
 builder.Services.AddSingleton<ScoringMetricsService>();
 
 builder.Services.AddScoped<IScoringService, ScoringService>();
+builder.Services.AddScoped<ConditionConfigService>();
+
 
 
 // builder.Services.AddSingleton<IEnumerable<ICondition>>(sp => 

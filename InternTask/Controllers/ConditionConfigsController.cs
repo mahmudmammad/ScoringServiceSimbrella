@@ -1,6 +1,6 @@
-using InternTask.DB;
+// Controllers/ConditionConfigsController.cs
+using InternTask.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace InternTask.Controllers;
 
@@ -8,28 +8,21 @@ namespace InternTask.Controllers;
 [Route("api/[controller]")]
 public class ConditionConfigsController : ControllerBase
 {
-    private readonly ScoringDbContext _context;
+    private readonly ConditionConfigService _configService;
 
-    public ConditionConfigsController(ScoringDbContext context)
+    public ConditionConfigsController(ConditionConfigService configService)
     {
-        _context = context;
+        _configService = configService;
     }
 
     [HttpPut("{type}/enable")]
     public async Task<IActionResult> SetConditionEnabled(string type, [FromQuery] bool enabled)
     {
-        var config = await _context.ConditionConfigs
-            .FirstOrDefaultAsync(c => c.Type == type);
+        var updatedConfig = await _configService.SetConditionEnabledAsync(type, enabled);
 
-        if (config == null)
-        {
+        if (updatedConfig == null)
             return NotFound($"Condition with type '{type}' not found.");
-        }
 
-        config.Enabled = enabled;
-        _context.ConditionConfigs.Update(config);
-        await _context.SaveChangesAsync();
-
-        return Ok(new { config.Type, config.Enabled });
+        return Ok(new { updatedConfig.Type, updatedConfig.Enabled });
     }
 }
