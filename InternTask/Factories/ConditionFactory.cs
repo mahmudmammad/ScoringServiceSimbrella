@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using InternTask.DB;
 
 namespace InternTask.Factories
 {
@@ -77,6 +79,53 @@ namespace InternTask.Factories
                 default:
                     throw new ArgumentException($"Unknown condition type: {config.Type}");
             }
+        }
+        
+        public static IEnumerable<ICondition> CreateFromDatabase(
+            ScoringDbContext dbContext,
+            ILogger logger)
+        {
+            List<ICondition> conditions = new List<ICondition>();
+
+            var dbConfigs = dbContext.ConditionConfigs
+                .Where(c => c.Enabled)
+                .ToList();
+
+            logger.LogInformation($"Loading {dbConfigs.Count} conditions from database");
+
+            foreach (var configEntity in dbConfigs)
+            {
+                try
+                {
+                    Dictionary<string, string> parameters = new();
+
+                    if (!string.IsNullOrWhiteSpace(configEntity.ParametersJson))
+                    {
+                        parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(configEntity.ParametersJson);
+                    }
+
+                    var config = new Models.Configuration.ConditionConfig
+                    {
+                        Type = configEntity.Type,
+                        Enabled = configEntity.Enabled,
+                        Parameters = parameters
+                    };
+
+                    ICondition condition = CreateCondition(config);
+
+                    if (condition != null)
+                    {
+                        conditions.Add(condition);
+                        logger.LogInformation($"Created condition from DB: {condition.Id} (Priority: {condition.Priority})");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Error creating condition {configEntity.Type}: {ex.Message}");
+                }
+            }
+
+            return conditions;
         }
         
 

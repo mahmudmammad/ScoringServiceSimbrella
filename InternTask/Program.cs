@@ -28,10 +28,18 @@ builder.Services.AddSingleton<ScoringMetricsService>();
 builder.Services.AddScoped<IScoringService, ScoringService>();
 
 
-builder.Services.AddSingleton<IEnumerable<ICondition>>(sp => 
+// builder.Services.AddSingleton<IEnumerable<ICondition>>(sp => 
+// {
+//     var logger = sp.GetRequiredService<ILogger<Program>>();
+//     return ConditionFactory.CreateFromConfiguration(builder.Configuration, logger);
+// });
+
+builder.Services.AddScoped<IEnumerable<ICondition>>(sp =>
 {
     var logger = sp.GetRequiredService<ILogger<Program>>();
-    return ConditionFactory.CreateFromConfiguration(builder.Configuration, logger);
+    var dbContext = sp.GetRequiredService<ScoringDbContext>();
+
+    return ConditionFactory.CreateFromDatabase(dbContext, logger);
 });
 
 var app = builder.Build();
@@ -46,18 +54,21 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
-
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ScoringDbContext>();
-    dbContext.Database.Migrate();  
-}
-
-app.UseAuthorization();
-app.MapControllers();
+//
+// using (var scope = app.Services.CreateScope())
+// {
+//     var dbContext = scope.ServiceProvider.GetRequiredService<ScoringDbContext>();
+//     dbContext.Database.Migrate();  
+// }
 
 app.UseRouting();
+
+app.UseAuthorization();
+
 app.UseMetricServer();
 app.UseHttpMetrics();
+
+app.MapControllers();
+
 
 app.Run();

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InternTask")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60dbeda29e51af48d8b53b14f1f8c993b70914de")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+729a8af00e7db13e803542915687f7f58765abb1")]
 [assembly: System.Reflection.AssemblyProductAttribute("InternTask")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InternTask")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
