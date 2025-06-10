@@ -105,6 +105,8 @@ Add seed data for database-driven configuration:
 
 ```csharp
 dotnet ef migrations add <HasDefaultHistory>
+dotnet ef database update
+
 
 ```
 
