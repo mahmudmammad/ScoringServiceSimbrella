@@ -56,12 +56,12 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
-//
-// using (var scope = app.Services.CreateScope())
-// {
-//     var dbContext = scope.ServiceProvider.GetRequiredService<ScoringDbContext>();
-//     dbContext.Database.Migrate();  
-// }
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ScoringDbContext>();
+    dbContext.Database.Migrate();  
+}
 
 app.UseRouting();
 

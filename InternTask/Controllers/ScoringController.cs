@@ -34,11 +34,7 @@ namespace InternTask.Controllers
             return Ok(result);
         }
         
-        [HttpGet("ping")]
-        public IActionResult Ping()
-        {
-            return Ok("pong");
-        }
+       
         
        
     }
