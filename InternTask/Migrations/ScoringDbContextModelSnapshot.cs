@@ -50,44 +50,6 @@ namespace InternTask.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ConditionConfigs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Enabled = true,
-                            ParametersJson = "{\"MinimumSalary\":\"5000\",\"SalaryMultiplier\":\"1.2\"}",
-                            Priority = 1,
-                            Required = true,
-                            Type = "SalaryThreshold"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Enabled = true,
-                            ParametersJson = "{\"MaxLoanCount\":\"5\"}",
-                            Priority = 2,
-                            Required = true,
-                            Type = "LoanCountLimit"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Enabled = true,
-                            ParametersJson = "{\"MinimumBalance\":\"1000\",\"BalanceMultiplier\":\"2.0\"}",
-                            Priority = 3,
-                            Required = false,
-                            Type = "AccountBalance"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Enabled = false,
-                            ParametersJson = "{\"FailIfHasDefault\":\"true\"}",
-                            Priority = 4,
-                            Required = true,
-                            Type = "DefaultHistory"
-                        });
                 });
 
             modelBuilder.Entity("InternTask.Entities.ConditionEvaluationEntity", b =>

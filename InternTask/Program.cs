@@ -2,12 +2,14 @@ using InternTask.Factories;
 using InternTask.Interfaces;
 using InternTask.Services;
 using InternTask.DB;
+using InternTask.Models.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +23,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ScoringDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.Configure<ConditionsConfig>(
+    builder.Configuration.GetSection("ScoringService"));
 
 
 builder.Services.AddSingleton<ScoringMetricsService>();
@@ -59,9 +63,17 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ScoringDbContext>();
-    dbContext.Database.Migrate();  
+    var services = scope.ServiceProvider;
+
+    var dbContext = services.GetRequiredService<ScoringDbContext>();
+    dbContext.Database.Migrate();
+
+    var configOptions = services.GetRequiredService<IOptions<ConditionsConfig>>();
+    var config = configOptions.Value;
+
+    await DbSeeder.SeedConditionConfigsAsync(dbContext, config);
 }
+
 
 app.UseRouting();
 

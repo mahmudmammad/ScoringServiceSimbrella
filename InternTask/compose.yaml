@@ -37,12 +37,15 @@ services:
     image: grafana/grafana
     environment:
       - GF_LOG_LEVEL=warn
-      - GF_LOG_FILTERS=migrator:warn
+      - GF_SECURITY_ADMIN_PASSWORD=admin123  # Set admin password
     ports:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
     restart: always
+    depends_on:
+      - prometheus
 
   api:
     build:
