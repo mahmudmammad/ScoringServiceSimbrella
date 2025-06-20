@@ -1,26 +1,70 @@
-# 🔧 Adding New Conditions to the Scoring System
+# Scoring Service
 
-> A comprehensive guide for extending the loan scoring system with custom conditions
+A .NET-based Web API that evaluates customer loan eligibility using configurable business conditions. The project leverages PostgreSQL for data persistence, Prometheus for monitoring, and Docker for containerized deployment.
+
+## 🛠 Features
+
+- **Dynamic Rule Engine**: Customer scoring based on configurable business conditions
+- **Monitoring Integration**: Prometheus metrics with Grafana dashboards
+- **Database Support**: PostgreSQL for reliable data persistence
+- **Containerized Deployment**: Docker-ready for easy setup and scaling
+- **Modular Architecture**: Strategy pattern implementation for extensible conditions
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Docker and Docker Compose
+- .NET 8.0 SDK (for development)
 
 
+### Quick Setup
 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/mahmudmammad/ScoringServiceSimbrella
+   cd InternTask
+   ```
 
+2. **Build and run with Docker**
+   ```bash
+   docker-compose build
+   docker-compose up
+   ```
 
-## 🚀 Quick Start
+### Access Points
 
-### 1. Create Your Condition Class
-The core design principle of the scoring service was modularity, ensuring that business condition(rules) were implemented as independent components. The Strategy Design Pattern
-was used to encapsulate each condition in separate class that implement a shared interface
-(ICondition "has evaluate method inside of it" ). This allowed conditions to be interchangeable and independently testable.
-Each condition returns: 
+Once running, the following services will be available:
 
-• boolean indicating whether it is satisfied
+| Service | URL | Description |
+|---------|-----|-------------|
+| **API** | http://localhost:8080 | Main scoring service endpoint |
+| **Prometheus** | http://localhost:9090 | Metrics collection and monitoring |
+| **Grafana** | http://localhost:3000 | Metrics visualization dashboard |
 
-• optional eligible amount
+## 🏗 Architecture
 
-The Service iterates all condition results and determines whether the customer passes the
-overall scoring based on predefined logic (you can enable or disable the condition if you want
-in runtime).
+The scoring system is built on a modular architecture using the **Strategy Design Pattern**. Each business condition is implemented as an independent component that implements the `ICondition` interface, ensuring:
+
+- **Modularity**: Conditions are interchangeable and independently testable
+- **Flexibility**: Easy to add, remove, or modify conditions at runtime
+- **Maintainability**: Each condition is self-contained with clear responsibilities
+
+### Core Components
+
+- **ICondition Interface**: Defines the contract for all scoring conditions
+- **ConditionFactory**: Creates and configures condition instances
+- **ScoringService**: Orchestrates condition evaluation and final scoring
+- **Database Layer**: Stores condition configurations
+
+## 🔧 Adding New Conditions
+
+Follow these steps to extend the scoring system with custom business rules:
+
+### Step 1: Create Your Condition Class
+
+Implement the `ICondition` interface in a new class:
+
 ```csharp
 using InternTask.Interfaces;
 using InternTask.Models;
@@ -30,32 +74,32 @@ namespace InternTask.Conditions
     public class HasDefaultHistoryCondition : ICondition
     {
         private readonly bool _failIfHasDefault;
-
+        
         public string Id => "DefaultHistory";
         public string Name => "Default History Check";
         public int Priority => 1;
-        public bool IsRequired => true; // Defaults are a serious risk, make this required
-
+        public bool IsRequired => true; // Critical risk factor
+        
         public HasDefaultHistoryCondition(bool failIfHasDefault = true)
         {
             _failIfHasDefault = failIfHasDefault;
         }
-
+        
         public ConditionResult Evaluate(Customer customer)
         {
             if (customer == null)
             {
                 return ConditionResult.Failure("Customer information is missing");
             }
-
+            
             if (_failIfHasDefault && customer.HasDefaultHistory)
             {
                 return ConditionResult.Failure("Customer has a history of loan defaults");
             }
-
+            
             return ConditionResult.Success(0, "Customer has no history of loan defaults");
         }
-
+        
         public Dictionary<string, object> GetConfiguration()
         {
             return new Dictionary<string, object>
@@ -67,48 +111,109 @@ namespace InternTask.Conditions
 }
 ```
 
+### Step 2: Register in Factory
 
-### 2. Register in Factory
+Add your condition to the `ConditionFactory.cs`:
 
 ```csharp
 // In ConditionFactory.cs - CreateCondition method
-   case "DefaultHistory":
-                    bool failIfHasDefault = GetBoolParameter(config.Parameters, "FailIfHasDefault", true);
-                    return new HasDefaultHistoryCondition(failIfHasDefault);   
+case "DefaultHistory":
+    bool failIfHasDefault = GetBoolParameter(config.Parameters, "FailIfHasDefault", true);
+    return new HasDefaultHistoryCondition(failIfHasDefault);
 ```
 
+### Step 3:  Configuration
 
-
-
-
-###3: Database Configuration 
-
-Add seed data for database-driven configuration:
+Add seed data for your new condition:
 
 ```csharp
-// In ScoringDbContext.OnModelCreating
-  new ConditionConfigEntity
-        {
-            Id = 4,
-            Type = "DefaultHistory",
-            Enabled = false,
-            Required = true,
-            Priority = 4,
-            ParametersJson = JsonSerializer.Serialize(new Dictionary<string, string>
-            {
-                { "FailIfHasDefault", "true" }
-            })
+ "ScoringService": {
+    "Conditions": [
+      {
+        "Type": "SalaryThreshold",
+        "Enabled": true,
+        "Required": true,
+        "Priority": 1,
+        "Parameters": {
+          "MinimumSalary": "5000",
+          "SalaryMultiplier": "1.2"
         }
+      },
+      {
+        "Type": "LoanCountLimit",
+        "Enabled": true,
+        "Required": true,
+        "Priority": 2,
+        "Parameters": {
+          "MaxLoanCount": "5"
+        }
+      },
+      {
+        "Type": "AccountBalance",
+        "Enabled": true,
+        "Required": false,
+        "Priority": 3,
+        "Parameters": {
+          "MinimumBalance": "2000",
+          "BalanceMultiplier": "2.0"
+        }
+      }
+    ,
+
+      {
+        "Type": "DefaultHistory",
+        "Enabled": false,
+        "Required": true,
+        "Priority": 4,
+        "Parameters": {
+          "FailIfHasDefault": "true"
+        }}
+    ]
+  }
 ```
 
-###4: Add Migration
+### Step 4: Apply Database Migration
 
-```csharp
-dotnet ef migrations add <HasDefaultHistory>
+Create and apply the migration:
+
+```bash
+dotnet ef migrations add AddHasDefaultHistoryCondition
 dotnet ef database update
-
-
 ```
+
+## 📊 Condition Evaluation Flow
+
+Each condition returns a `ConditionResult` containing:
+
+- **Success/Failure Status**: Boolean indicating if the condition is satisfied
+- **Eligible Amount**: Optional amount for conditions that affect loan limits
+- **Message**: Descriptive feedback for logging and debugging
+
+The scoring service processes all enabled conditions and determines overall eligibility based on:
+
+- Required conditions must all pass
+- Optional conditions contribute to the final score
+- Priority determines evaluation order
+
+## 🔍 Monitoring and Observability
+
+The service includes comprehensive monitoring through:
+
+- **Prometheus Metrics**: Request counts, response times, condition evaluation stats
+- **Grafana Dashboards**: Visual representation of system health and performance
+- **Structured Logging**: Detailed logs for debugging and audit trails
+
+## 🧪 Testing
+
+The modular design facilitates comprehensive testing:
+
+- **Unit Tests**: Each condition can be tested in isolation
+- **Performance Tests**: Load testing with various condition combinations
+
+## 📈 Performance Considerations
+
+- Conditions are evaluated in priority order for optimal performance
+
 
 
 
